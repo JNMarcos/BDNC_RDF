@@ -23,12 +23,12 @@ public class ConversaoRegras {
 	 */
 
 	public static void main(String[] args) {
-		String caminhoPasta = "C:\\Users\\JN\\Downloads\\BD_Triple-Store_RDF (1)\\02_Rule_files";
+		String caminhoPasta = "C:\\Users\\JN\\Downloads\\BDNC_TripleStoreDetalhado\\BD_Triple-Store_RDF_Detalhado_v2\\02_Rule_files";
 		File pasta = new File(caminhoPasta);
 
 		String nomeArquivo;
-		String textoEntrada;
-		String linhaEntrada;
+		String[] consultasEntrada;
+		String linhaEntrada = "";
 		String textoSaida;
 		String[] partesRegras;
 
@@ -42,7 +42,7 @@ public class ConversaoRegras {
 			System.out.println("O caminho indicado por \'Caminho Pasta\' não existe.");
 		}
 
-		//
+		//lista os arquivos
 		File[] arquivos = pasta.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
@@ -55,37 +55,38 @@ public class ConversaoRegras {
 			nomeArquivo = (arquivos[i]).getName(); //obtém o nome do arquivo
 			//System.out.println(nomeArquivo);
 
-			textoEntrada = "";
-			//Arquivo de leitura a partir do caminhoTemporario (string)
+			//arquivo de leitura a partir do caminhoPasta (string)
 			try {
 				fr = new FileReader(arquivos[i].getPath());
-				//Cria-se o buffer para ler do arquivo
+				//cria-se o buffer para ler do arquivo
 				br = new BufferedReader(fr);
 
+				//a entrada é apenas uma linha mesmo
 				linhaEntrada = br.readLine();
-				while(linhaEntrada != null){
-					textoEntrada = textoEntrada + " " + linhaEntrada;
-					linhaEntrada = br.readLine();
-				}
+				//remove-se os espaços em branco do início e fim da entrada
+				linhaEntrada = linhaEntrada.trim();
+				//possui as consultas a serem convertidas
+				consultasEntrada = linhaEntrada.split(" ");							
 
-				//até aqui se tem todo o texto lido
 				br.close();
 				fr.close();
 
+				//System.out.println(nomeArquivo);
+				//System.out.println(textoEntrada);
 				
-				System.out.println(nomeArquivo);
-				System.out.println(textoEntrada);
-				
-				//está sendo divido pelas vírgulas
-				partesRegras = textoEntrada.split("\\),");
-				//a parte ), das regras sumirão, mas como vai fazer a conversão, é só
-				//levar isso em consideração
-				
-				
-				//aqui se faria o procedimento
+				//aqui se fará o procedimento
 				//começa do 1 pq o 0 é a cabeça da regra
-				for (int j = 1; j < partesRegras.length; j ++){
-					System.out.println(partesRegras[j]);
+				for (int j = 0; j < consultasEntrada.length; j ++){
+					System.out.println(j + " " + consultasEntrada[j]);
+					//possui as consultas por regras, que são separados por vírgula
+					//essas partes no padrão serão removidos, mas para conversão, não serão 
+					//necessários, logo não terá problema
+					partesRegras = consultasEntrada[j].split("\\),");
+					
+					//começa do 1 pq  cabeça é desconsiderada
+					for (int k = 1; k < partesRegras.length; k++)
+						System.out.println(partesRegras[k]);
+					System.out.println();
 				}
 
 			} catch (FileNotFoundException e) {
@@ -98,7 +99,7 @@ public class ConversaoRegras {
 			try {
 				fw = new FileWriter(new File(pasta + "\\\\" + nomeArquivo));
 				bw = new BufferedWriter(fw);
-				bw.write(textoEntrada); //por enquanto de entrada, mas trocar para o de saida
+				bw.write(linhaEntrada); //por enquanto de entrada, mas trocar para o de saida
 				bw.flush();
 				bw.close();
 			} catch (IOException e) {
