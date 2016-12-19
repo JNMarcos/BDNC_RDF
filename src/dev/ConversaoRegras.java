@@ -13,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * @author JN
@@ -34,7 +33,8 @@ public class ConversaoRegras {
 		String nomeArquivo;
 		String[] consultasEntrada;
 		String linhaEntrada = "";
-		String textoSaida;
+		String consulta;
+		String textoSaida = null;
 		String[] partesRegras;
 
 		//Buffer
@@ -42,6 +42,11 @@ public class ConversaoRegras {
 		BufferedReader br;
 		FileWriter fw;
 		BufferedWriter bw;
+		
+		//Caminho de saída
+		File caminhoSaida = new File("02_Rule_files\\Consultas");
+		caminhoSaida.mkdir();
+		
 		//System.out.println(arquivoPasta);
 		if (!pasta.exists()) { //Se pasta não existe, cria
 			System.out.println("O caminho indicado por \'Caminho Pasta\' não existe.");
@@ -72,6 +77,7 @@ public class ConversaoRegras {
 		predicateMapping.put("ck_hasType", "hasType");
 		predicateMapping.put("t_pos", "hasPos");
 		predicateMapping.put("t_type", "hasTkType");
+		predicateMapping.put("t_root", "isRoot");
 		predicateMapping.put("t_ck_ot", "hasCkType");
 		predicateMapping.put("t_ck_tag_ot", "hasCkTypeOT");
 		predicateMapping.put("t_orth", "hasOrth");
@@ -109,11 +115,8 @@ public class ConversaoRegras {
 				br.close();
 				fr.close();
 
-				//System.out.println(nomeArquivo);
-				//System.out.println(textoEntrada);
-				
-				//aqui se fará o procedimento
-				//começa do 1 pq o 0 é a cabeça da regra
+				System.out.println(nomeArquivo);
+
 				for (int j = 0; j < consultasEntrada.length; j ++){
 					System.out.println(j + " " + consultasEntrada[j]);
 					//possui as consultas por regras, que são separados por vírgula
@@ -121,13 +124,16 @@ public class ConversaoRegras {
 					//necessários, logo não terá problema
 					partesRegras = consultasEntrada[j].split("\\),");
 					
-					String consulta = "";
+					consulta = "";
+					textoSaida = "";
 					
 					for (int k = 0; k < partesRegras.length; k++) {
 						String[] partes = splitRegra(partesRegras[k]);
 						if (k == 0) { // váriaveis da cabeça
 							consulta += String.format("SELECT %s? %s? where { ", partes[1], partes[2]);
 						} else {
+							//remove o ) caso tenha na regra
+							partes[2] = partes[2].replace(")", "");
 							if (partes[2].equals("true"))
 								consulta += String.format("%s? %s %s. ", partes[1], partes[0], partes[2]);
 							else
@@ -135,6 +141,7 @@ public class ConversaoRegras {
 						}
 					}
 					consulta += " }";
+					textoSaida += consulta;
 					System.out.println(consulta);
 					System.out.println();
 				}
@@ -145,11 +152,10 @@ public class ConversaoRegras {
 				System.out.println("Erro na leitura do arquivo.");
 			}
 
-			textoSaida = "";
 			try {
-				fw = new FileWriter(new File(pasta + "\\\\" + nomeArquivo));
+				fw = new FileWriter(new File(caminhoSaida + "\\\\" + nomeArquivo + "_saida"));
 				bw = new BufferedWriter(fw);
-				bw.write(linhaEntrada); //por enquanto de entrada, mas trocar para o de saida
+				bw.write(textoSaida); //por enquanto de entrada, mas trocar para o de saida
 				bw.flush();
 				bw.close();
 			} catch (IOException e) {
@@ -161,20 +167,31 @@ public class ConversaoRegras {
 	}
 	
 	private static String[] splitRegra(String regra) {
-		String[] parteInicio = regra.split("\\(");
+		String[] cabecaCorpo = regra.split("\\(");
+		String[] partesCorpo;
+		
 		String[] partes = new String[3];
 		
-		partes[0] = predicateMapping.containsKey(parteInicio[0]) ? predicateMapping.get(parteInicio[0]) : parteInicio[0];
-		partes[1] = parteInicio[1].split(",")[0];
-
-		if (regra.contains(",")) {
-			String parteFinal = parteInicio[1].split(",")[1];
-			int index = parteFinal.indexOf(')');
-			partes[2] = index != -1 ? parteFinal.substring(0, index) : parteFinal;
-		} else if (parteInicio.length == 2) {
-			partes[2] = "true";
+		partesCorpo = cabecaCorpo[1].split(",");
+		if (partesCorpo.length == 3){
+			partes[0] = "has" + partesCorpo[0].toUpperCase().charAt(0)
+					+ partesCorpo[0].substring(1);
+		} else {
+			partes[0] = predicateMapping.containsKey(cabecaCorpo[0]) ? predicateMapping.get(cabecaCorpo[0]) : cabecaCorpo[0];
 		}
-		
+
+		if (partesCorpo.length == 1){//se há apenas um argumento
+			partes[1] = partesCorpo[0];
+			partes[2] = "true";
+		} else if (partesCorpo.length == 2){ //se há dois arguementos na regra
+			partes[1] = partesCorpo[0];
+			//quando for hasGPos tem de adicionar um gen_ antes do atributo
+			partes[2] = partes[0] == "hasGPos"? "gen_" + partesCorpo[1] : partesCorpo[1];
+		} else { //se há 3 argumentos
+			partes[1] = partesCorpo[1];
+			partes[2] = partesCorpo[2];
+		}
+
 		return partes;
 	}
 }

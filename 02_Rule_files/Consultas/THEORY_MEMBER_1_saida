@@ -1,0 +1,1 @@
+SELECT A? B? where { B? hasCkTypeOT b-np?. B? hasNext C?. C? hasGPos gen_nn?. A? hasNER person?. D? hasToken A?. D? hasToken B?. A? hasOrth mixedcase?.  }

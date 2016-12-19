@@ -1,0 +1,1 @@
+SELECT A? B? where { A? hasNext C?. C? hasOrth lowercase?. C? hasCkType np?. A? hasGPos gen_nn?. B? hasNext A?.  }
