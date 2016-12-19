@@ -11,6 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author JN
@@ -21,6 +24,8 @@ public class ConversaoRegras {
 	/**
 	 * @param args
 	 */
+	
+	public static Map<String, String> predicateMapping;
 
 	public static void main(String[] args) {
 		String caminhoPasta = "02_Rule_files";
@@ -41,6 +46,39 @@ public class ConversaoRegras {
 		if (!pasta.exists()) { //Se pasta não existe, cria
 			System.out.println("O caminho indicado por \'Caminho Pasta\' não existe.");
 		}
+		
+		// Iniciar dicionario de predicados
+		predicateMapping = new HashMap<>();
+		// Entidades
+		predicateMapping.put("chunk", "isChunk");
+		predicateMapping.put("token", "isToken");
+		// Predicados envolvendo chaves relativas as entidades
+		predicateMapping.put("ck_hasSucc", "hasSucc");
+		predicateMapping.put("ck_has_tokens", "hasToken");
+		predicateMapping.put("ck_hasHead", "hasHead");
+		predicateMapping.put("t_next", "hasNext");
+		// Predicados ou propriedades envolvendo uma entidade e seu valor
+		predicateMapping.put("t_stem", "hasStem");
+		predicateMapping.put("t_bigPosAft", "hasBigPosAft");
+		predicateMapping.put("t_bigPosBef", "hasBigPosBef");
+		predicateMapping.put("t_trigPosAft", "hasTrigPosAft");
+		predicateMapping.put("t_trigPosBef", "hasTrigPosBef");
+		predicateMapping.put("t_ne_type", "hasNEType");
+		predicateMapping.put("t_mtype", "hasMType");
+		predicateMapping.put("t_subtype", "hasSubType");
+		predicateMapping.put("t_isHeadPP", "isHeadPP");
+		predicateMapping.put("t_isHeadNP", "isHeadNP");
+		predicateMapping.put("t_isHeadVP", "isHeadVP");
+		predicateMapping.put("ck_hasType", "hasType");
+		predicateMapping.put("t_pos", "hasPos");
+		predicateMapping.put("t_type", "hasTkType");
+		predicateMapping.put("t_ck_ot", "hasCkType");
+		predicateMapping.put("t_ck_tag_ot", "hasCkTypeOT");
+		predicateMapping.put("t_orth", "hasOrth");
+		predicateMapping.put("t_ner", "hasNER");
+		predicateMapping.put("t_gpos", "hasGPos");
+		predicateMapping.put("t_length", "hasLength");
+		predicateMapping.put("ck_posRelPred", "hasDistToRoot");
 
 		//lista os arquivos
 		File[] arquivos = pasta.listFiles(new FileFilter() {
@@ -85,16 +123,15 @@ public class ConversaoRegras {
 					
 					String consulta = "";
 					
-					//começa do 1 pq  cabeça é desconsiderada
 					for (int k = 0; k < partesRegras.length; k++) {
 						String[] partes = splitRegra(partesRegras[k]);
 						if (k == 0) { // váriaveis da cabeça
 							consulta += String.format("SELECT %s? %s? where { ", partes[1], partes[2]);
-						} else if (partes.length == 3) {
-							consulta += String.format("%s? %s %s?. ", partes[1], partes[0], partes[2]);
 						} else {
-							// TODO: algumas consultas são: preposicao(A).
-							// Como montar as triplas com ela?
+							if (partes[2].equals("true"))
+								consulta += String.format("%s? %s %s. ", partes[1], partes[0], partes[2]);
+							else
+								consulta += String.format("%s? %s %s?. ", partes[1], partes[0], partes[2]);
 						}
 					}
 					consulta += " }";
@@ -125,16 +162,17 @@ public class ConversaoRegras {
 	
 	private static String[] splitRegra(String regra) {
 		String[] parteInicio = regra.split("\\(");
-		String[] partes = null;
+		String[] partes = new String[3];
+		
+		partes[0] = predicateMapping.containsKey(parteInicio[0]) ? predicateMapping.get(parteInicio[0]) : parteInicio[0];
+		partes[1] = parteInicio[1].split(",")[0];
+
 		if (regra.contains(",")) {
-			partes = new String[3];
-			partes[0] = parteInicio[0];
-			partes[1] = parteInicio[1].split(",")[0];
-			partes[2] = parteInicio[1].split(",")[1].substring(0, parteInicio[1].split(",")[1].length() - 1);
+			String parteFinal = parteInicio[1].split(",")[1];
+			int index = parteFinal.indexOf(')');
+			partes[2] = index != -1 ? parteFinal.substring(0, index) : parteFinal;
 		} else if (parteInicio.length == 2) {
-			partes = new String[2];
-			partes[0] = parteInicio[0];
-			partes[1] = parteInicio[1].split(",")[0];
+			partes[2] = "true";
 		}
 		
 		return partes;
