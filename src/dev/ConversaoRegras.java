@@ -38,7 +38,7 @@ public class ConversaoRegras {
 		FileWriter fw;
 		BufferedWriter bw;
 		//System.out.println(arquivoPasta);
-		if (!pasta.exists()){ //Se pasta não existe, cria
+		if (!pasta.exists()) { //Se pasta não existe, cria
 			System.out.println("O caminho indicado por \'Caminho Pasta\' não existe.");
 		}
 
@@ -83,9 +83,22 @@ public class ConversaoRegras {
 					//necessários, logo não terá problema
 					partesRegras = consultasEntrada[j].split("\\),");
 					
+					String consulta = "";
+					
 					//começa do 1 pq  cabeça é desconsiderada
-					for (int k = 1; k < partesRegras.length; k++)
-						System.out.println(partesRegras[k]);
+					for (int k = 0; k < partesRegras.length; k++) {
+						String[] partes = splitRegra(partesRegras[k]);
+						if (k == 0) { // váriaveis da cabeça
+							consulta += String.format("SELECT %s? %s? where { ", partes[1], partes[2]);
+						} else if (partes.length == 3) {
+							consulta += String.format("%s? %s %s?. ", partes[1], partes[0], partes[2]);
+						} else {
+							// TODO: algumas consultas são: preposicao(A).
+							// Como montar as triplas com ela?
+						}
+					}
+					consulta += " }";
+					System.out.println(consulta);
 					System.out.println();
 				}
 
@@ -108,5 +121,22 @@ public class ConversaoRegras {
 			}
 
 		}
+	}
+	
+	private static String[] splitRegra(String regra) {
+		String[] parteInicio = regra.split("\\(");
+		String[] partes = null;
+		if (regra.contains(",")) {
+			partes = new String[3];
+			partes[0] = parteInicio[0];
+			partes[1] = parteInicio[1].split(",")[0];
+			partes[2] = parteInicio[1].split(",")[1].substring(0, parteInicio[1].split(",")[1].length() - 1);
+		} else if (parteInicio.length == 2) {
+			partes = new String[2];
+			partes[0] = parteInicio[0];
+			partes[1] = parteInicio[1].split(",")[0];
+		}
+		
+		return partes;
 	}
 }
