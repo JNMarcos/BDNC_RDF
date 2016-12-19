@@ -1,0 +1,1 @@
+member_g(A,B),t_ck_tag_ot(B,b-np),t_next(B,C),t_gpos(C,nn),t_ner(A,person),ck_has_tokens(D,A),ck_has_tokens(D,B),t_orth(A,mixedcase)

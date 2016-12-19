@@ -23,7 +23,7 @@ public class ConversaoRegras {
 	 */
 
 	public static void main(String[] args) {
-		String caminhoPasta = "C:\\Users\\JN\\Downloads\\BDNC_TripleStoreDetalhado\\BD_Triple-Store_RDF_Detalhado_v2\\02_Rule_files";
+		String caminhoPasta = "02_Rule_files";
 		File pasta = new File(caminhoPasta);
 
 		String nomeArquivo;

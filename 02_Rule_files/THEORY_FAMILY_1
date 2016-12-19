@@ -1,0 +1,1 @@
+family(A,B),ck_has_tokens(C,A),ck_hasSucc(C,D),ck_hasType(D,np),t_next(A,E),t_next(E,F),ck_has_tokens(D,F),t_next(B,G),t_bigPosBef(G,nn-nnp),t_orth(E,lowercase),t_ck_ot(E,np),t_next(G,H),tok_length(H,short)

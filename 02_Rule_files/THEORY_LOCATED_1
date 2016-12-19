@@ -1,0 +1,1 @@
+located(A,B),t_pos(B,nnp),t_next(A,C),ck_has_tokens(D,C),ck_hasSucc(D,E),t_root(A),t_isHeadNP(A),t_orth(A,mixedcase)

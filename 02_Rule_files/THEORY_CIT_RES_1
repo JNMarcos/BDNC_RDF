@@ -1,0 +1,1 @@
+cit_res(A,B),t_next(A,C),t_next(C,B),ck_has_tokens(D,C),t_ner(B,location),t_isHeadNP(A)
