@@ -1,1 +1,1 @@
-SELECT A? B? where { B? hasNext C?. C? hasNext A?. C? hasCkType np?. A? hasGPos gen_nn?. A? hasOrth mixedcase?.  }
+SELECT A? B? where { B? hasNext C?. C? hasNext A?. C? hasCkType np. A? hasGPos gen_nn. A? hasOrth mixedcase.  }

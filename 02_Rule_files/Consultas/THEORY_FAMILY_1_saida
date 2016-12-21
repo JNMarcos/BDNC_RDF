@@ -1,1 +1,1 @@
-SELECT A? B? where { C? hasToken A?. C? hasSucc D?. D? hasType np?. A? hasNext E?. E? hasNext F?. D? hasToken F?. B? hasNext G?. G? hasBigPosBef nn-nnp?. E? hasOrth lowercase?. E? hasCkType np?. G? hasNext H?. H? tok_length short?.  }
+SELECT A? B? where { C? hasToken A?. C? hasSucc D?. D? hasType np. A? hasNext E?. E? hasNext F?. D? hasToken F?. B? hasNext G?. G? hasBigPosBef nn-nnp. E? hasOrth lowercase. E? hasCkType np. G? hasNext H?. H? tok_length short.  }

@@ -133,8 +133,9 @@ public class ConversaoRegras {
 							consulta += String.format("SELECT %s? %s? where { ", partes[1], partes[2]);
 						} else {
 							//remove o ) caso tenha na regra
+							partes[1] = partes[1].replace(")", "");
 							partes[2] = partes[2].replace(")", "");
-							if (partes[2].equals("true"))
+							if (partes[2].equals("true") || partes[2].charAt(0) == partes[2].toLowerCase().charAt(0))
 								consulta += String.format("%s? %s %s. ", partes[1], partes[0], partes[2]);
 							else
 								consulta += String.format("%s? %s %s?. ", partes[1], partes[0], partes[2]);

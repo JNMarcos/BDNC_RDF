@@ -1,1 +1,1 @@
-SELECT A? B? where { A? hasNext C?. C? hasNext B?. D? hasToken C?. B? hasNER location?. A)? isHeadNP true.  }
+SELECT A? B? where { A? hasNext C?. C? hasNext B?. D? hasToken C?. B? hasNER location. A? isHeadNP true.  }
