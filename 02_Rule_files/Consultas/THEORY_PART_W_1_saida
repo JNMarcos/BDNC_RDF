@@ -1,4 +1,4 @@
 
 
 PREFIX cin: <http://www.ace.com/2005/>
-SELECT DISTINCT ?A ?B WHERE { ?A cin:hasNext ?B. ?B cin:hasPos "nnp". ?A cin:isHeadNP "true". ?B hasNn ?C.  }
+SELECT DISTINCT ?A ?B WHERE { ?A cin:hasNext ?B. ?B cin:hasPos "nnp". ?A cin:isHeadNP "true". ?B cin:hasNn ?C.  }

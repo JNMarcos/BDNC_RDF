@@ -175,7 +175,7 @@ public class ConversaoRegras {
 		
 		partesCorpo = cabecaCorpo[1].split(",");
 		if (partesCorpo.length == 3){
-			partes[0] = "has" + partesCorpo[0].toUpperCase().charAt(0)
+			partes[0] = "cin:has" + partesCorpo[0].toUpperCase().charAt(0)
 					+ partesCorpo[0].substring(1);
 		} else {
 			partes[0] = predicateMapping.containsKey(cabecaCorpo[0]) ? predicateMapping.get(cabecaCorpo[0]) : cabecaCorpo[0];
