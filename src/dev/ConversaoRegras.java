@@ -55,36 +55,36 @@ public class ConversaoRegras {
 		// Iniciar dicionario de predicados
 		predicateMapping = new HashMap<>();
 		// Entidades
-		predicateMapping.put("chunk", "isChunk");
-		predicateMapping.put("token", "isToken");
+		predicateMapping.put("chunk", "cin:isChunk");
+		predicateMapping.put("token", "cin:isToken");
 		// Predicados envolvendo chaves relativas as entidades
-		predicateMapping.put("ck_hasSucc", "hasSucc");
-		predicateMapping.put("ck_has_tokens", "hasToken");
-		predicateMapping.put("ck_hasHead", "hasHead");
-		predicateMapping.put("t_next", "hasNext");
+		predicateMapping.put("ck_hasSucc", "cin:hasSucc");
+		predicateMapping.put("ck_has_tokens", "cin:hasToken");
+		predicateMapping.put("ck_hasHead", "cin:hasHead");
+		predicateMapping.put("t_next", "cin:hasNext");
 		// Predicados ou propriedades envolvendo uma entidade e seu valor
-		predicateMapping.put("t_stem", "hasStem");
-		predicateMapping.put("t_bigPosAft", "hasBigPosAft");
-		predicateMapping.put("t_bigPosBef", "hasBigPosBef");
-		predicateMapping.put("t_trigPosAft", "hasTrigPosAft");
-		predicateMapping.put("t_trigPosBef", "hasTrigPosBef");
-		predicateMapping.put("t_ne_type", "hasNEType");
-		predicateMapping.put("t_mtype", "hasMType");
-		predicateMapping.put("t_subtype", "hasSubType");
-		predicateMapping.put("t_isHeadPP", "isHeadPP");
-		predicateMapping.put("t_isHeadNP", "isHeadNP");
-		predicateMapping.put("t_isHeadVP", "isHeadVP");
-		predicateMapping.put("ck_hasType", "hasType");
-		predicateMapping.put("t_pos", "hasPos");
-		predicateMapping.put("t_type", "hasTkType");
-		predicateMapping.put("t_root", "isRoot");
-		predicateMapping.put("t_ck_ot", "hasCkType");
-		predicateMapping.put("t_ck_tag_ot", "hasCkTypeOT");
-		predicateMapping.put("t_orth", "hasOrth");
-		predicateMapping.put("t_ner", "hasNER");
-		predicateMapping.put("t_gpos", "hasGPos");
-		predicateMapping.put("t_length", "hasLength");
-		predicateMapping.put("ck_posRelPred", "hasDistToRoot");
+		predicateMapping.put("t_stem", "cin:hasStem");
+		predicateMapping.put("t_bigPosAft", "cin:hasBigPosAft");
+		predicateMapping.put("t_bigPosBef", "cin:hasBigPosBef");
+		predicateMapping.put("t_trigPosAft", "cin:hasTrigPosAft");
+		predicateMapping.put("t_trigPosBef", "cin:hasTrigPosBef");
+		predicateMapping.put("t_ne_type", "cin:hasNEType");
+		predicateMapping.put("t_mtype", "cin:hasMType");
+		predicateMapping.put("t_subtype", "cin:hasSubType");
+		predicateMapping.put("t_isHeadPP", "cin:isHeadPP");
+		predicateMapping.put("t_isHeadNP", "cin:isHeadNP");
+		predicateMapping.put("t_isHeadVP", "cin:isHeadVP");
+		predicateMapping.put("ck_hasType", "cin:hasType");
+		predicateMapping.put("t_pos", "cin:hasPos");
+		predicateMapping.put("t_type", "cin:hasTkType");
+		predicateMapping.put("t_root", "cin:isRoot");
+		predicateMapping.put("t_ck_ot", "cin:hasCkType");
+		predicateMapping.put("t_ck_tag_ot", "cin:hasCkTypeOT");
+		predicateMapping.put("t_orth", "cin:hasOrth");
+		predicateMapping.put("t_ner", "cin:hasNER");
+		predicateMapping.put("t_gpos", "cin:hasGPos");
+		predicateMapping.put("t_length", "cin:hasLength");
+		predicateMapping.put("ck_posRelPred", "cin:hasDistToRoot");
 
 		//lista os arquivos
 		File[] arquivos = pasta.listFiles(new FileFilter() {
@@ -130,15 +130,15 @@ public class ConversaoRegras {
 					for (int k = 0; k < partesRegras.length; k++) {
 						String[] partes = splitRegra(partesRegras[k]);
 						if (k == 0) { // váriaveis da cabeça
-							consulta += String.format("SELECT %s? %s? where { ", partes[1], partes[2]);
+							consulta += String.format("\n\nPREFIX cin: <http://www.ace.com/2005/>\nSELECT DISTINCT ?%s ?%s WHERE { ", partes[1], partes[2]);
 						} else {
 							//remove o ) caso tenha na regra
 							partes[1] = partes[1].replace(")", "");
 							partes[2] = partes[2].replace(")", "");
 							if (partes[2].equals("true") || partes[2].charAt(0) == partes[2].toLowerCase().charAt(0))
-								consulta += String.format("%s? %s %s. ", partes[1], partes[0], partes[2]);
+								consulta += String.format("?%s %s \"%s\". ", partes[1], partes[0], partes[2]);
 							else
-								consulta += String.format("%s? %s %s?. ", partes[1], partes[0], partes[2]);
+								consulta += String.format("?%s %s ?%s. ", partes[1], partes[0], partes[2]);
 						}
 					}
 					consulta += " }";

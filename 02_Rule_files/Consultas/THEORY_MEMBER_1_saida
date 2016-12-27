@@ -1,1 +1,4 @@
-SELECT A? B? where { B? hasCkTypeOT b-np. B? hasNext C?. C? hasGPos gen_nn. A? hasNER person. D? hasToken A?. D? hasToken B?. A? hasOrth mixedcase.  }
+
+
+PREFIX cin: <http://www.ace.com/2005/>
+SELECT DISTINCT ?A ?B WHERE { ?B cin:hasCkTypeOT "b-np". ?B cin:hasNext ?C. ?C cin:hasGPos "nn". ?A cin:hasNER "person". ?D cin:hasToken ?A. ?D cin:hasToken ?B. ?A cin:hasOrth "mixedcase".  }

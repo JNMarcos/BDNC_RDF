@@ -1,1 +1,4 @@
-SELECT A? B? where { C? hasToken A?. C? hasSucc D?. D? hasType np. A? hasNext E?. E? hasNext F?. D? hasToken F?. B? hasNext G?. G? hasBigPosBef nn-nnp. E? hasOrth lowercase. E? hasCkType np. G? hasNext H?. H? tok_length short.  }
+
+
+PREFIX cin: <http://www.ace.com/2005/>
+SELECT DISTINCT ?A ?B WHERE { ?C cin:hasToken ?A. ?C cin:hasSucc ?D. ?D cin:hasType "np". ?A cin:hasNext ?E. ?E cin:hasNext ?F. ?D cin:hasToken ?F. ?B cin:hasNext ?G. ?G cin:hasBigPosBef "nn-nnp". ?E cin:hasOrth "lowercase". ?E cin:hasCkType "np". ?G cin:hasNext ?H. ?H tok_length "short".  }
