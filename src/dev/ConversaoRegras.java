@@ -127,10 +127,13 @@ public class ConversaoRegras {
 					consulta = "";
 					textoSaida = "";
 
+					String[] partes = null;
+					String finalConsulta = "";
 					for (int k = 0; k < partesRegras.length; k++) {
-						String[] partes = splitRegra(partesRegras[k]);
+						partes = splitRegra(partesRegras[k]);
 						if (k == 0) { // váriaveis da cabeça
-							consulta += String.format("\n\nPREFIX cin: <http://www.ace.com/2005/>\nSELECT DISTINCT ?%s ?%s WHERE { ", partes[1], partes[2]);
+							consulta += String.format("\n\nPREFIX cin: <http://www.ace.com/2005/>\nSELECT DISTINCT ?%s ?stem%s ?%s ?stem%s WHERE { ", partes[1], partes[1], partes[2], partes[2]);
+							finalConsulta = "?" + partes[1] + " cin:hasStem ?stem" + partes[1] + ". ?" + partes[2] + " cin:hasStem ?stem" + partes[2] + ". }";
 						} else {
 							//remove o ) caso tenha na regra
 							partes[1] = partes[1].replace(")", "");
@@ -150,7 +153,7 @@ public class ConversaoRegras {
 								consulta += String.format("?%s %s ?%s. ", partes[1], partes[0], partes[2]);
 						}
 					}
-					consulta += " }";
+					consulta += finalConsulta;
 					textoSaida += consulta;
 					System.out.println(consulta);
 					System.out.println();
