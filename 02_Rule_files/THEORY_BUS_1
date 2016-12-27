@@ -1,1 +1,1 @@
-business(A,B),t_next(A,C),ck_has_tokens(D,C),t_next(B,E),t_next(E,F),t_pos(F,dt),t_ner(B,person),tok_length(C,short),t_next(C,G),ck_has_tokens(D,G)
+business(A,B),t_next(A,C),ck_has_tokens(D,C),t_next(B,E),t_next(E,F),t_pos(F,dt),t_ner(B,person),t_length(C,short),t_next(C,G),ck_has_tokens(D,G)
