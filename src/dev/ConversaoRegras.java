@@ -23,7 +23,7 @@ public class ConversaoRegras {
 	/**
 	 * @param args
 	 */
-	
+
 	public static Map<String, String> predicateMapping;
 
 	public static void main(String[] args) {
@@ -42,16 +42,16 @@ public class ConversaoRegras {
 		BufferedReader br;
 		FileWriter fw;
 		BufferedWriter bw;
-		
+
 		//Caminho de saída
 		File caminhoSaida = new File("02_Rule_files\\Consultas");
 		caminhoSaida.mkdir();
-		
+
 		//System.out.println(arquivoPasta);
 		if (!pasta.exists()) { //Se pasta não existe, cria
 			System.out.println("O caminho indicado por \'Caminho Pasta\' não existe.");
 		}
-		
+
 		// Iniciar dicionario de predicados
 		predicateMapping = new HashMap<>();
 		// Entidades
@@ -123,10 +123,10 @@ public class ConversaoRegras {
 					//essas partes no padrão serão removidos, mas para conversão, não serão 
 					//necessários, logo não terá problema
 					partesRegras = consultasEntrada[j].split("\\),");
-					
+
 					consulta = "";
 					textoSaida = "";
-					
+
 					for (int k = 0; k < partesRegras.length; k++) {
 						String[] partes = splitRegra(partesRegras[k]);
 						if (k == 0) { // váriaveis da cabeça
@@ -136,8 +136,17 @@ public class ConversaoRegras {
 							partes[1] = partes[1].replace(")", "");
 							partes[2] = partes[2].replace(")", "");
 							if (partes[2].equals("true") || partes[2].charAt(0) == partes[2].toLowerCase().charAt(0))
-								consulta += String.format("?%s %s \"%s\". ", partes[1], partes[0], partes[2]);
-							else
+							{	
+								if (partes[2].equals("short")){
+									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)<3)).");
+								} else if (partes[2].equals("medium")){
+									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)>=3 && xsd:integer(?length)<8).");
+								} else if (partes[2].equals("long")){
+									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)>8)).");
+								} else {
+									consulta += String.format("?%s %s \"%s\". ", partes[1], partes[0], partes[2]);
+								}
+							} else
 								consulta += String.format("?%s %s ?%s. ", partes[1], partes[0], partes[2]);
 						}
 					}
@@ -166,13 +175,13 @@ public class ConversaoRegras {
 
 		}
 	}
-	
+
 	private static String[] splitRegra(String regra) {
 		String[] cabecaCorpo = regra.split("\\(");
 		String[] partesCorpo;
-		
+
 		String[] partes = new String[3];
-		
+
 		partesCorpo = cabecaCorpo[1].split(",");
 		if (partesCorpo.length == 3){
 			partes[0] = "cin:has" + partesCorpo[0].toUpperCase().charAt(0)
@@ -188,6 +197,7 @@ public class ConversaoRegras {
 			partes[1] = partesCorpo[0];
 			//quando for hasGPos tem de adicionar um gen_ antes do atributo
 			partes[2] = partes[0] == "hasGPos"? "gen_" + partesCorpo[1] : partesCorpo[1];
+
 		} else { //se há 3 argumentos
 			partes[1] = partesCorpo[1];
 			partes[2] = partesCorpo[2];
