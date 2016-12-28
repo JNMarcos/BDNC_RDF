@@ -141,11 +141,11 @@ public class ConversaoRegras {
 							if (partes[2].equals("true") || partes[2].charAt(0) == partes[2].toLowerCase().charAt(0))
 							{	
 								if (partes[2].equals("short")){
-									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)<3)).");
+									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)<3).");
 								} else if (partes[2].equals("medium")){
 									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)>=3 && xsd:integer(?length)<8).");
 								} else if (partes[2].equals("long")){
-									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)>8)).");
+									consulta += String.format("?%s %s %s ", partes[1], partes[0], "?length. FILTER(xsd:integer(?length)>8).");
 								} else {
 									consulta += String.format("?%s %s \"%s\". ", partes[1], partes[0], partes[2]);
 								}

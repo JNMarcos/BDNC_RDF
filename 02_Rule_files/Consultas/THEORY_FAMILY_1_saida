@@ -1,4 +1,4 @@
 
 
 PREFIX cin: <http://www.ace.com/2005/>
-SELECT DISTINCT ?A ?stemA ?B ?stemB WHERE { ?C cin:hasToken ?A. ?C cin:hasSucc ?D. ?D cin:hasType "np". ?A cin:hasNext ?E. ?E cin:hasNext ?F. ?D cin:hasToken ?F. ?B cin:hasNext ?G. ?G cin:hasBigPosBef "nn-nnp". ?E cin:hasOrth "lowercase". ?E cin:hasCkType "np". ?G cin:hasNext ?H. ?H cin:hasLength ?length. FILTER(xsd:integer(?length)<3)). ?A cin:hasStem ?stemA. ?B cin:hasStem ?stemB. }
+SELECT DISTINCT ?A ?stemA ?B ?stemB WHERE { ?C cin:hasToken ?A. ?C cin:hasSucc ?D. ?D cin:hasType "np". ?A cin:hasNext ?E. ?E cin:hasNext ?F. ?D cin:hasToken ?F. ?B cin:hasNext ?G. ?G cin:hasBigPosBef "nn-nnp". ?E cin:hasOrth "lowercase". ?E cin:hasCkType "np". ?G cin:hasNext ?H. ?H cin:hasLength ?length. FILTER(xsd:integer(?length)<3). ?A cin:hasStem ?stemA. ?B cin:hasStem ?stemB. }
